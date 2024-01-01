@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<style>
+			* {
+			    margin: 0;
+			    padding: 0;
+			    border: 0;
+			    font-family: Arial;
+			}
+
+			body {
+			    background-color: aquamarine;
+			    transition: 2s;
+			    overflow: hidden;
+			}
+
+			h2, h3 {
+			    text-align: center;
+			    font-weight: lighter;
+			}
+
+			.boxes {
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+			    flex-direction: column;
+			    width: 100vw;
+			    height: 100vh;
+			}
+
+			.boxes-upper, .boxes-center, .boxes-down {
+			    display: flex;
+			    background-color: black;
+			}
+
+			.box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8, .box9 {
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+			    font-size: 300%;
+			    margin: 1px;
+			    background-color: rgb(101, 141, 233);
+			    width: 100px;
+			    height: 100px;
+			    transition: 1s;
+			    cursor: pointer;
+			}
+
+			.box1:hover, .box2:hover, .box3:hover, .box4:hover, .box5:hover, .box6:hover, .box7:hover, .box8:hover, .box9:hover {
+			    background-color: rgb(69, 248, 245);
+			}
+
+			.box1, .box2, .box3 {
+			    margin-top: 0;
+			}
+
+			.box1, .box4, .box7 {
+			    margin-left: 0;
+			}
+
+			.box7, .box8, .box9 {
+			    margin-bottom: 0;
+			}
+
+			.box9, .box6, .box3 {
+			    margin-right: 0;
+			}
+
+			.players {
+			    display: flex;
+			    justify-content: center;
+			    align-items: center;
+			}
+
+			.players p {
+			    color: black;
+			    margin: 10px;
+			}
+
+			.alert {
+			    background-color: blue;
+			    border-radius: 20px;
+			    text-align: center;
+			    width: 0;
+			    height: 0;
+			    visibility: hidden;
+			    z-index: 1;
+			    /* transition: 1s; */
+			}
+
+			button {
+			    background-color: antiquewhite;
+			    padding: 10px;
+			    border-radius: 10px;
+			    cursor: pointer;
+			}
+
+			/* Responsive Media Queries */
+
+			@media only screen and (max-width: 1200px) {
+			    /* Styles for larger screens */
+			    .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8, .box9 {
+			        width: 80px;
+			        height: 80px;
+			        font-size: 200%;
+			    }
+			}
+
+			@media only screen and (max-width: 992px) {
+			    /* Styles for medium-sized screens */
+			    .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8, .box9 {
+			        width: 70px;
+			        height: 70px;
+			        font-size: 180%;
+			    }
+			}
+
+			@media only screen and (max-width: 768px) {
+			    /* Styles for tablets and small laptops */
+			    .boxes {
+			        height: auto;
+			    }
+
+			    .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8, .box9 {
+			        width: 60px;
+			        height: 60px;
+			        font-size: 150%;
+			    }
+			}
+
+			@media only screen and (max-width: 480px) {
+			    /* Styles for mobiles */
+			    .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8, .box9 {
+			        width: 40px;
+			        height: 40px;
+			        font-size: 100%;
+			    }
+			}
+		</style>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Tic Tac Toe</title>
+	</head>
+	<body>
+		<h2>Welcome to <i>Tic Tac Toe</i></h2>
+		<h3>Enjoy our game.</h3>
+		<main>
+			<div class="container">
+				<div class="boxes">
+					<div class="alert">
+						<h2>Congratulations!</h2>
+						<p class="para"></p>
+						<button onclick="reset_game()">Reset</button>
+					</div>
+					<div class="players">
+						<h3 class="player1">Player-1</h3>
+						<p>V/S</p>
+						<h3 class="player2">Player-2</h3>
+					</div>
+					<div class="boxes-upper">
+						<div class="box1" onclick="box1()"></div>
+						<div class="box2" onclick="box2()"></div>
+						<div class="box3" onclick="box3()"></div>
+					</div>
+					<div class="boxes-center">
+						<div class="box4" onclick="box4()"></div>
+						<div class="box5" onclick="box5()"></div>
+						<div class="box6" onclick="box6()"></div>
+					</div>
+					<div class="boxes-down">
+						<div class="box7" onclick="box7()"></div>
+						<div class="box8" onclick="box8()"></div>
+						<div class="box9" onclick="box9()"></div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<script>
+		
+			// declare a function for congratulations on winning
+			function winning_box() {
+				congratulations_box.style.transition = "1s";
+				congratulations_box.style.visibility = "visible";
+				congratulations_box.style.width = "50vw";
+				congratulations_box.style.height = "20vh";
+			}
+			// declare a function for changing color on changing every turn
+			function change_color() {
+				if (permission_player_one === true && permission_player_two === false) {
+					player_1.style.color = "green";
+					player_2.style.color = "red";
+				}
+				else if (permission_player_one === false && permission_player_two === true) {
+					player_1.style.color = "red";
+					player_2.style.color = "green";
+				}
+			}
+			// declare a function for checking,  if player_1 is won the match
+			function checking_won_player_1_func() {
+				if (box_1.innerHTML === "O" && box_2.innerHTML === "O" && box_3.innerHTML ===  "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_4.innerHTML === "O" && box_5.innerHTML === "O" && box_6.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_7.innerHTML === "O" && box_8.innerHTML === "O" && box_9.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_1.innerHTML === "O" && box_4.innerHTML === "O" && box_7.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_2.innerHTML === "O" && box_5.innerHTML === "O" && box_8.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_3.innerHTML === "O" && box_6.innerHTML === "O" && box_9.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_1.innerHTML === "O" && box_5.innerHTML === "O" && box_9.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+				else if (box_3.innerHTML === "O" && box_5.innerHTML === "O" && box_7.innerHTML === "O") {
+					won_player_1 = true;
+					won_player_2 = false;
+				}
+			}
+			// declare a function for checking,  if player_2 is won the match
+			function checking_won_player_2_func() {
+				if (box_1.innerHTML === "X" && box_2.innerHTML === "X" && box_3.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_4.innerHTML === "X" && box_5.innerHTML === "X" && box_6.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_7.innerHTML === "X" && box_8.innerHTML === "X" && box_9.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_1.innerHTML === "X" && box_4.innerHTML === "X" && box_7.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_2.innerHTML === "X" && box_5.innerHTML === "X" && box_8.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_3.innerHTML === "X" && box_6.innerHTML === "X" && box_9.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_1.innerHTML === "X" && box_5.innerHTML === "X" && box_9.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+				else if (box_3.innerHTML === "X" && box_5.innerHTML === "X" && box_7.innerHTML === "X") {
+					won_player_2 = true;
+					won_player_1 = false;
+				}
+			}
+			// declare a function for reset game
+			function reset_game() {
+				congratulations_box.style.transition = "0.2s"
+				congratulations_box.style.visibility = "hidden"
+				congratulations_box.style.width = "0"
+				congratulations_box.style.height = "0"
+				permission_player_one = true
+				permission_player_two = false
+				won_player_1 = false
+				won_player_2 = false
+				box_1.innerHTML = ""
+				box_2.innerHTML = ""
+				box_3.innerHTML = ""
+				box_4.innerHTML = ""
+				box_5.innerHTML = ""
+				box_6.innerHTML = ""
+				box_7.innerHTML = ""
+				box_8.innerHTML = ""
+				box_9.innerHTML = ""
+			}
+			function checking_tie() {
+				if (box_1.innerHTML !== "" && box_2.innerHTML !== "" && box_3.innerHTML !== "" && box_4.innerHTML !== "" && box_5.innerHTML !== "" && box_6.innerHTML !== "" && box_7.innerHTML !== "" && box_8.innerHTML !== "" && box_9.innerHTML !== "") {
+					tie = true;
+				}
+			};
+
+
+			// declare variables
+			         let box_1 = document.querySelector(".box1");
+			         let box_2 = document.querySelector(".box2");
+			         let box_3 = document.querySelector(".box3");
+			         let box_4 = document.querySelector(".box4");
+			         let box_5 = document.querySelector(".box5");
+			         let box_6 = document.querySelector(".box6");
+			         let box_7 = document.querySelector(".box7");
+			         let box_8 = document.querySelector(".box8");
+			         let box_9 = document.querySelector(".box9");
+
+					 let tie = false;
+
+					 // declare variable of player names
+			         let player_1 = document.querySelector(".player1");
+			         let player_2 = document.querySelector(".player2");
+					 let congratulations_box = document.querySelector(".alert");
+					 let congratulations_para = document.querySelector(".para");
+
+					 // permission of user on its turn
+			         let permission_player_one = true;
+			         let permission_player_two = false;
+
+					 // declare the permission of win
+					 let won_player_1 = false;
+					 let won_player_2 = false;
+
+					 // declare the color of players, according its turn onreload page
+			         player_1.style.color = "green";
+			         player_2.style.color = "red";
+
+			         // changing the color of text on changing turn
+			         document.addEventListener("click", function() {
+						 change_color();
+						 checking_won_player_1_func();
+						 checking_won_player_2_func();
+						 checking_tie();
+
+						 if (won_player_1 === true && won_player_2 === false) {
+							winning_box();
+							congratulations_para.innerHTML = "Player-1 is the winner"
+							permission_player_one = false;
+							permission_player_two = false;
+						 }
+						 else if (won_player_2 === true && won_player_1 === false) {
+							winning_box();
+							congratulations_para.innerHTML = "Player-2 is the winner"
+							permission_player_one = false;
+							permission_player_two = false;
+						 }
+						 else if (tie === true) {
+							winning_box();
+							congratulations_para.innerHTML = "Game is Tie"
+							permission_player_one = false;
+							permission_player_two = false;
+							tie = false;
+						 }
+			         });
+
+			         // filling box_1 onclick
+			function box1() {
+			             if (permission_player_one === true && box_1.innerHTML === "") {
+			                 box_1.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_1.innerHTML === "") {
+			                 box_1.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}
+			         // filling box_2 onclick
+			function box2() {
+			             if (permission_player_one === true && box_2.innerHTML === "") {
+			                 box_2.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_2.innerHTML === "") {
+			                 box_2.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}
+			         // filling box_3 on click
+			function box3() {
+			             if (permission_player_one === true && box_3.innerHTML === "") {
+			                 box_3.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_3.innerHTML === "") {
+			                 box_3.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box4() {
+			             if (permission_player_one === true && box_4.innerHTML === "") {
+			                 box_4.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_4.innerHTML === "") {
+			                 box_4.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box5() {
+			             if (permission_player_one === true && box_5.innerHTML === "") {
+			                 box_5.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_5.innerHTML === "") {
+			                 box_5.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box6() {
+			             if (permission_player_one === true && box_6.innerHTML === "") {
+			                 box_6.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_6.innerHTML === "") {
+			                 box_6.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box7() {
+			             if (permission_player_one === true && box_7.innerHTML === "") {
+			                 box_7.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_7.innerHTML === "") {
+			                 box_7.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box8() {
+			             if (permission_player_one === true && box_8.innerHTML === "") {
+			                 box_8.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_8.innerHTML === "") {
+			                 box_8.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}function box9() {
+			             if (permission_player_one === true && box_9.innerHTML === "") {
+			                 box_9.innerHTML = "O";
+			                 permission_player_one = false;
+			                 permission_player_two = true;
+			             }
+			             else if (permission_player_two === true && box_9.innerHTML === "") {
+			                 box_9.innerHTML = "X";
+			                 permission_player_one = true;
+			                 permission_player_two = false;
+			             }
+			}
+		</script>
+	</body>
+</html>
